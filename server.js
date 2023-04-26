@@ -9,6 +9,7 @@ _server.get('/standings', async (req, res) => {
     try {
         const response = await axios.get('https://statsapi.web.nhl.com/api/v1/standings');
         const data = response.data;
+        res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
         res.send(data);
       } catch (error) {
         console.error(error);
