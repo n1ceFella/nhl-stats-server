@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios')
 const _server = express();
+require('dotenv').config();
 
 _server.use(express.static('public'));
 
@@ -15,6 +16,6 @@ _server.get('/data', async (req, res) => {
       }
   });
 
-  _server.listen(process.env.PORT, () => {
+  _server.listen(process.env.PORT || 8080, () => {
     console.log('Server listening on port 8080');
   });
