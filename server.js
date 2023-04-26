@@ -1,11 +1,11 @@
 const express = require('express');
-const axios = require('axios')
+const axios = require('axios');
 const _server = express();
 require('dotenv').config();
 
 _server.use(express.static('public'));
 
-_server.get('/data', async (req, res) => {
+_server.get('/standings', async (req, res) => {
     try {
         const response = await axios.get('https://statsapi.web.nhl.com/api/v1/standings');
         const data = response.data;
@@ -17,5 +17,5 @@ _server.get('/data', async (req, res) => {
   });
 
   _server.listen(process.env.PORT || 8080, () => {
-    console.log('Server listening on port 8080');
+    console.log('Server listening on port ' + process.env.PORT);
   });
