@@ -8,6 +8,7 @@ _server.use(express.static('public'));
     try {
         const response = await axios.get('https://statsapi.web.nhl.com/api/v1/standings');
         const data = response.data;
+        res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
         res.send(data);
       } catch (error) {
         console.error(error);
@@ -19,6 +20,7 @@ _server.use(express.static('public'));
     try {
         const response = await axios.get('https://statsapi.web.nhl.com/api/v1/schedule');
         const data = response.data;
+        res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
         res.send(data);
       } catch (error) {
         console.error(error);
@@ -29,6 +31,7 @@ _server.use(express.static('public'));
   try {
       const response = await axios.get('https://statsapi.web.nhl.com/api/v1/schedule?date=' + req.params.date);
       const data = response.data;
+      res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
       res.send(data);
     } catch (error) {
       console.error(error);
