@@ -8,13 +8,13 @@ _server.use(express.static('public'));
     try {
         const response = await axios.get('https://statsapi.web.nhl.com/api/v1/standings');
         const data = response.data;
+        res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
         res.send(data);
       } catch (error) {
         console.error(error);
         res.status(500).send('Error retrieving data');
       }
   });
-
   _server.get('/schedule', async (req, res) => {
     try {
         const response = await axios.get('https://statsapi.web.nhl.com/api/v1/schedule');
@@ -36,6 +36,6 @@ _server.use(express.static('public'));
     }
   });
 
-_server.listen(8080, () => {
-  console.log('Server listening on port 8080');
+_server.listen(process.env.PORT || 8080, () => {
+    console.log('Server listening on port ' + process.env.PORT);
 });
