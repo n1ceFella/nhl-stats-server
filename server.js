@@ -50,7 +50,7 @@ _server.use(express.static('public'));
         res.status(500).send('Error retrieving data');
       }
   });
-  _server.get('/teams/:id/roster', async (req, res) => {
+  _server.get('/team/:id/roster', async (req, res) => {
     try {
         let response = await axios.get(API_URL + '/teams/' + req.params.id + '/roster');
         const data = response.data.roster;
