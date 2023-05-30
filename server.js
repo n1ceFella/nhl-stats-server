@@ -10,7 +10,13 @@ _server.use(express.static('public'));
     try {
         const response = await axios.get(API_URL + '/standings');
         const data = response.data;
-        res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
+        const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
+        const origin = req.headers.origin;
+        
+        if (allowedOrigins.includes(origin)) {
+          res.setHeader('Access-Control-Allow-Origin', origin);
+        }
+        // res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
         res.send(data);
       } catch (error) {
         console.error(error);
@@ -21,7 +27,13 @@ _server.use(express.static('public'));
     try {
         const response = await axios.get(API_URL + '/schedule');
         const data = response.data;
-        res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
+        const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
+        const origin = req.headers.origin;
+        
+        if (allowedOrigins.includes(origin)) {
+          res.setHeader('Access-Control-Allow-Origin', origin);
+        }
+        // res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
         res.send(data);
       } catch (error) {
         console.error(error);
@@ -32,7 +44,13 @@ _server.use(express.static('public'));
   try {
       const response = await axios.get(API_URL + '/schedule?date=' + req.params.date);
       const data = response.data;
-      res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
+      const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
+      const origin = req.headers.origin;
+      
+      if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+      }
+      // res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
       res.send(data);
     } catch (error) {
       console.error(error);
@@ -43,7 +61,13 @@ _server.use(express.static('public'));
     try {
         const response = await axios.get(API_URL + '/teams');
         const data = response.data;
-        res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
+        const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
+        const origin = req.headers.origin;
+        
+        if (allowedOrigins.includes(origin)) {
+          res.setHeader('Access-Control-Allow-Origin', origin);
+        }
+        // res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
         res.send(data);
       } catch (error) {
         console.error(error);
@@ -60,7 +84,13 @@ _server.use(express.static('public'));
             let info = await axios.get(url);
             data[i].stat = info.data.stats[0].splits[0].stat;
           }
-        res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
+          const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
+          const origin = req.headers.origin;
+          
+          if (allowedOrigins.includes(origin)) {
+            res.setHeader('Access-Control-Allow-Origin', origin);
+          }
+          // res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
         res.send(data);
       } catch (error) {
         console.error(error);
@@ -82,7 +112,13 @@ _server.use(express.static('public'));
           playersInfo.weight = data.weight;
           playersInfo.currentTeam = data.currentTeam.name;
           playersInfo.primaryPosition = data.primaryPosition.name;
-        res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
+          const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
+          const origin = req.headers.origin;
+          
+          if (allowedOrigins.includes(origin)) {
+            res.setHeader('Access-Control-Allow-Origin', origin);
+          }
+          // res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
         res.send(playersInfo);
       } catch (error) {
         console.error(error);
