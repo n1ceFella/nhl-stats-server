@@ -7,10 +7,16 @@ const router = express.Router();
 require('dotenv').config();
 
 _server.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
+  const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
+  const origin = req.headers.origin;
+  
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  res.setHeader('Access-Control-Allow-Credentials', 'true'); // Add this line to allow credentials
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
 
   next();
 });
