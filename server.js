@@ -145,6 +145,12 @@ _server.use(function(req, res, next) {
   });
 
 _server.post("/register", async (req, res) => {
+  const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
+  const origin = req.headers.origin;
+  
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
   authData.registerUser(req.body).then((msg) => {
     res.status(201).json({ message: msg });
   }).catch((err) => {
@@ -153,6 +159,12 @@ _server.post("/register", async (req, res) => {
 });
  
 _server.post("/login", async (req, res) => {
+  const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
+  const origin = req.headers.origin;
+  
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
   req.body.userAgent = req.get('User-Agent'); 
         authData.checkUser(req.body).then((user) => {
 
@@ -169,11 +181,23 @@ _server.post("/login", async (req, res) => {
 });
 
 _server.get("/logout", function (req, res) {
+  const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
+  const origin = req.headers.origin;
+  
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
   req.session.reset();
   res.status(200).json({ message: "Success" });
 });
 
 _server.get("/check-login", (req, res) => {
+  const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
+  const origin = req.headers.origin;
+  
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
   if (req.session && req.session.user) {
     // User is logged in
     res.sendStatus(200);
@@ -185,6 +209,12 @@ _server.get("/check-login", (req, res) => {
 });
 
 _server.get("/session", (req, res) => {
+  const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
+  const origin = req.headers.origin;
+  
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
   // Retrieve session data from req.session or any other session storage mechanism
   const sessionData = req.session;
 
