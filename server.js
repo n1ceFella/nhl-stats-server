@@ -4,7 +4,16 @@ const _server = express();
 const authData = require('./auth-service.js');
 const clientSessions = require("client-sessions");
 const router = express.Router();
-require('dotenv').config()
+require('dotenv').config();
+
+_server.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.setHeader('Access-Control-Allow-Credentials', 'true'); // Add this line to allow credentials
+
+  next();
+});
 
 const API_URL = "https://statsapi.web.nhl.com/api/v1";
 
