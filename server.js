@@ -41,7 +41,6 @@ _server.use(function(req, res, next) {
         res.status(500).send('Error retrieving data');
       }
   });
-
   _server.get('/schedule', async (req, res) => {
     try {
         const response = await axios.get(API_URL + '/schedule');
