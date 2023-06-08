@@ -1,10 +1,28 @@
 const express = require('express');
 const axios = require('axios')
 const _server = express();
+const authData = require('./auth-service.js');
+const clientSessions = require("client-sessions");
+const router = express.Router();
+require('dotenv').config()
 
 const API_URL = "https://statsapi.web.nhl.com/api/v1";
 
 _server.use(express.static('public'));
+_server.use(express.json());
+
+//session middleware
+_server.use(clientSessions({
+  cookieName: "session", // this is the object name that will be added to 'req'
+  secret: "some_random_session", // this should be a long un-guessable string.
+  duration: 2 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
+  activeDuration: 1000 * 60 // the session will be extended by this many ms each request (1 minute)
+}));
+
+_server.use(function(req, res, next) {
+  res.locals.session = req.session;
+  next();
+});
 
   _server.get('/standings', async (req, res) => {
     try {
@@ -127,6 +145,56 @@ _server.use(express.static('public'));
       }
   });
 
-_server.listen(8080, () => {
-  console.log('Server listening on port 8080');
+_server.post("/register", async (req, res) => {
+  authData.registerUser(req.body).then((msg) => {
+    res.status(201).json({ message: msg });
+  }).catch((err) => {
+    res.status(409).json({ error: err });
+  });
 });
+ 
+_server.post("/login", async (req, res) => {
+  req.body.userAgent = req.get('User-Agent'); 
+        authData.checkUser(req.body).then((user) => {
+
+
+            req.session.user = {
+                userName: user.userName, // authenticated user's userName
+                email: user.email,// authenticated user's email
+                loginHistory: user.loginHistory// authenticated user's loginHistory
+            }
+            res.status(200).json({ message: "Success" });
+        }).catch((err) => {
+          res.status(409).json({ error: err });
+    });
+});
+
+_server.get("/logout", function (req, res) {
+  req.session.reset();
+  res.status(200).json({ message: "Success" });
+});
+
+_server.get("/check-login", (req, res) => {
+  if (req.session && req.session.user) {
+    // User is logged in
+    res.sendStatus(200);
+   } 
+  else {
+    // User is not logged in
+    res.sendStatus(204);
+  }
+});
+
+_server.get("/session", (req, res) => {
+  // Retrieve session data from req.session or any other session storage mechanism
+  const sessionData = req.session;
+
+  // Return the session data as JSON response
+  res.json(sessionData);
+});
+
+  authData.initialize().then(()=>{
+    _server.listen(8080, () => {
+      console.log('Server listening on port 8080');
+    });
+  });
