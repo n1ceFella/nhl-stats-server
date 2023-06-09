@@ -38,17 +38,18 @@ _server.use(function(req, res, next) {
   res.locals.session = req.session;
   next();
 });
+function ensureLogin(req, res, next) {
+  if (!req.session) {
+    res.sendStatus(204);
+  } else {
+    next();
+  }
+}
 
   _server.get('/standings', async (req, res) => {
     try {
         const response = await axios.get(API_URL + '/standings');
         const data = response.data;
-        const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
-        const origin = req.headers.origin;
-        
-        if (allowedOrigins.includes(origin)) {
-          res.setHeader('Access-Control-Allow-Origin', origin);
-        }
         // res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
         res.send(data);
       } catch (error) {
@@ -56,16 +57,11 @@ _server.use(function(req, res, next) {
         res.status(500).send('Error retrieving data');
       }
   });
+
   _server.get('/schedule', async (req, res) => {
     try {
         const response = await axios.get(API_URL + '/schedule');
         const data = response.data;
-        const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
-        const origin = req.headers.origin;
-        
-        if (allowedOrigins.includes(origin)) {
-          res.setHeader('Access-Control-Allow-Origin', origin);
-        }
         // res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
         res.send(data);
       } catch (error) {
@@ -77,12 +73,6 @@ _server.use(function(req, res, next) {
   try {
       const response = await axios.get(API_URL + '/schedule?date=' + req.params.date);
       const data = response.data;
-      const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
-      const origin = req.headers.origin;
-      
-      if (allowedOrigins.includes(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-      }
       // res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
       res.send(data);
     } catch (error) {
@@ -94,12 +84,6 @@ _server.use(function(req, res, next) {
     try {
         const response = await axios.get(API_URL + '/teams');
         const data = response.data;
-        const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
-        const origin = req.headers.origin;
-        
-        if (allowedOrigins.includes(origin)) {
-          res.setHeader('Access-Control-Allow-Origin', origin);
-        }
         // res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
         res.send(data);
       } catch (error) {
@@ -116,12 +100,6 @@ _server.use(function(req, res, next) {
             url = ('https://statsapi.web.nhl.com/api/v1/people/' + playerID + '/stats?stats=statsSingleSeason&season=20222023');
             let info = await axios.get(url);
             data[i].stat = info.data.stats[0].splits[0].stat;
-          }
-          const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
-          const origin = req.headers.origin;
-          
-          if (allowedOrigins.includes(origin)) {
-            res.setHeader('Access-Control-Allow-Origin', origin);
           }
           // res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
         res.send(data);
@@ -145,12 +123,6 @@ _server.use(function(req, res, next) {
           playersInfo.weight = data.weight;
           playersInfo.currentTeam = data.currentTeam.name;
           playersInfo.primaryPosition = data.primaryPosition.name;
-          const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
-          const origin = req.headers.origin;
-          
-          if (allowedOrigins.includes(origin)) {
-            res.setHeader('Access-Control-Allow-Origin', origin);
-          }
           // res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
         res.send(playersInfo);
       } catch (error) {
@@ -160,12 +132,6 @@ _server.use(function(req, res, next) {
   });
 
 _server.post("/register", async (req, res) => {
-  const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
-  const origin = req.headers.origin;
-  
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
   authData.registerUser(req.body).then((msg) => {
     res.status(201).json({ message: msg });
   }).catch((err) => {
@@ -174,12 +140,6 @@ _server.post("/register", async (req, res) => {
 });
  
 _server.post("/login", async (req, res) => {
-  const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
-  const origin = req.headers.origin;
-  
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
   req.body.userAgent = req.get('User-Agent'); 
         authData.checkUser(req.body).then((user) => {
 
@@ -196,23 +156,12 @@ _server.post("/login", async (req, res) => {
 });
 
 _server.get("/logout", function (req, res) {
-  const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
-  const origin = req.headers.origin;
-  
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
+  // res.header('Access-Control-Allow-Origin', 'https://nhl-stats-portal.netlify.app');
   req.session.reset();
   res.status(200).json({ message: "Success" });
 });
 
 _server.get("/check-login", (req, res) => {
-  const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
-  const origin = req.headers.origin;
-  
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
   if (req.session && req.session.user) {
     // User is logged in
     res.sendStatus(200);
@@ -223,16 +172,10 @@ _server.get("/check-login", (req, res) => {
   }
 });
 
-_server.get("/session", (req, res) => {
-  const allowedOrigins = ['https://nhl-stats-portal.netlify.app', 'http://localhost:3000'];
-  const origin = req.headers.origin;
-  
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
+_server.get("/session", ensureLogin, (req, res) => {
   // Retrieve session data from req.session or any other session storage mechanism
   const sessionData = req.session;
-
+  console.log(sessionData.user.userName);
   // Return the session data as JSON response
   res.json(sessionData);
 });
