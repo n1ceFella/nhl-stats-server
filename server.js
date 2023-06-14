@@ -176,7 +176,6 @@ _server.get("/check-login", (req, res) => {
 _server.get("/session", ensureLogin, (req, res) => {
   // Retrieve session data from req.session or any other session storage mechanism
   const sessionData = req.session;
-  console.log(sessionData.user.userName);
   // Return the session data as JSON response
   res.json(sessionData);
 });
